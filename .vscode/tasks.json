@@ -58,6 +58,24 @@
       ],
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "label": "pack-nuget-release",
+      "detail": "Rebuild CefGlue.Common and CefGlue.Avalonia (Release, x64) into Nuget/output (Windows + Linux only)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/CefGlue.Avalonia/CefGlue.Avalonia.csproj",
+        "-c",
+        "Release",
+        "-p:Platform=x64",
+        "--no-incremental",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
     }
   ]
 }
