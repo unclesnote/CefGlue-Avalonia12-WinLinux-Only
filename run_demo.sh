@@ -9,16 +9,12 @@ case "$UNAME_S" in
         OS_TYPE="linux"
         EXE_NAME="Xilium.CefGlue.Demo.Avalonia"
         ;;
-    Darwin*)
-        OS_TYPE="osx"
-        EXE_NAME="Xilium.CefGlue.Demo.Avalonia"
-        ;;
     MINGW*|MSYS*|CYGWIN*)
         OS_TYPE="win"
         EXE_NAME="Xilium.CefGlue.Demo.Avalonia.exe"
         ;;
     *)
-        echo "Unsupported OS: $UNAME_S" >&2
+        echo "Unsupported OS: $UNAME_S (this fork supports Avalonia on Windows and Linux only)" >&2
         exit 1
         ;;
 esac
@@ -57,12 +53,6 @@ PROJECTS=(
     "$DEMO_PROJECT"
     "$ROOT_DIR/CefGlue.Tests/CefGlue.Tests.csproj"
 )
-if [[ "$OS_TYPE" == "win" ]]; then
-    PROJECTS+=(
-        "$ROOT_DIR/CefGlue.WPF/CefGlue.WPF.csproj"
-        "$ROOT_DIR/CefGlue.Demo.WPF/CefGlue.Demo.WPF.csproj"
-    )
-fi
 
 echo "Target environment: OS=$OS_TYPE, Platform=$PLATFORM, Configuration=$CONFIGURATION, TFM=$TFM"
 
