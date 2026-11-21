@@ -5,4 +5,6 @@
     <DocumentationFile />
   </PropertyGroup>
 
+  <Import Project="$(MSBuildThisFileDirectory)CefGlue.WinLinuxOnly.targets" />
+
 </Project>

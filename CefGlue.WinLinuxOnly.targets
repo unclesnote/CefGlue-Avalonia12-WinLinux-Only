@@ -1,0 +1,34 @@
+<Project>
+  <!--
+    This fork targets Avalonia on Windows and Linux only. Strip macOS from the build and the
+    NuGet packages without editing the upstream project files, so upstream merges stay clean.
+  -->
+
+  <!-- Don't depend on (or make consumers download) the macOS CEF redistributables. -->
+  <ItemGroup>
+    <PackageReference Remove="cef.redist.osx64;cef.redist.osx.arm64" />
+  </ItemGroup>
+
+  <!--
+    Replaces CefGlue.BrowserProcess' PublishApp target (a later definition wins) to publish
+    only the Windows and Linux browser process; the macOS publish is skipped.
+  -->
+  <Target Name="PublishApp" AfterTargets="AfterBuild"
+          Condition="'$(MSBuildProjectName)' == 'CefGlue.BrowserProcess' and '$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
+    <Message Text="Publishing CefGlue.BrowserProcess on Windows ($(Platform))..." Importance="High" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig);IsEditbinEnabled=True;" />
+
+    <Message Text="Publishing CefGlue.BrowserProcess on Linux ($(Platform))..." Importance="High" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)linux-$(ArchitectureConfig);IsEditbinEnabled=False;" />
+  </Target>
+
+  <!-- Drop the macOS browser process (bin/osx-*) that CefGlue.Common adds to its package. -->
+  <Target Name="RemoveOsxBrowserProcessFromPackage" AfterTargets="CopyProjectReferencesToPackage"
+          Condition="'$(MSBuildProjectName)' == 'CefGlue.Common'">
+    <ItemGroup>
+      <_OsxBrowserProcessPackageFile Include="@(TfmSpecificPackageFile)"
+                                     Condition="$([System.String]::Copy('%(TfmSpecificPackageFile.PackagePath)').Replace('\', '/').StartsWith('bin/osx-'))" />
+      <TfmSpecificPackageFile Remove="@(_OsxBrowserProcessPackageFile)" />
+    </ItemGroup>
+  </Target>
+</Project>
