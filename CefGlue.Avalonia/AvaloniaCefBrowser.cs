@@ -19,7 +19,7 @@ namespace Xilium.CefGlue.Avalonia
                 if (CefRuntime.Platform == CefRuntimePlatform.Linux)
                 {
                     LinuxNativeLibraryLoader.PreloadHarfBuzz();
-                    LinuxInputMethodManager.ConfigureIfNeeded();
+                    LinuxImeEnvironment.Apply();
                 }
 
                 var browserProcessHandler = new AvaloniaBrowserProcessHandler();

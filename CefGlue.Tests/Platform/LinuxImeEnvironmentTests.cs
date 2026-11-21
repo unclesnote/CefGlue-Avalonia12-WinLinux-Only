@@ -4,10 +4,10 @@ using Xilium.CefGlue.Avalonia.Platform.Linux.Ime;
 
 namespace CefGlue.Tests.Platform
 {
-    public class LinuxInputMethodManagerTests
+    public class LinuxImeEnvironmentTests
     {
-        private static LinuxInputMethodProvider Configure(Dictionary<string, string> env) =>
-            LinuxInputMethodManager.ConfigureIfNeeded(
+        private static string Configure(Dictionary<string, string> env) =>
+            LinuxImeEnvironment.Apply(
                 k => env.TryGetValue(k, out var v) ? v : null,
                 (k, v) => env[k] = v);
 
@@ -16,7 +16,7 @@ namespace CefGlue.Tests.Platform
         {
             var env = new Dictionary<string, string> { ["XMODIFIERS"] = "@im=ibus" };
 
-            Assert.IsInstanceOf<IBusInputMethodProvider>(Configure(env));
+            Assert.AreEqual("ibus", Configure(env));
             Assert.AreEqual("ibus", env["GTK_IM_MODULE"]);
             Assert.AreEqual("@im=ibus", env["XMODIFIERS"]);
             Assert.AreEqual("1", env["IBUS_ENABLE_SYNC_MODE"]);
@@ -27,7 +27,7 @@ namespace CefGlue.Tests.Platform
         {
             var env = new Dictionary<string, string> { ["QT_IM_MODULE"] = "ibus" };
 
-            Assert.IsInstanceOf<IBusInputMethodProvider>(Configure(env));
+            Assert.AreEqual("ibus", Configure(env));
             Assert.AreEqual("ibus", env["GTK_IM_MODULE"]);
             Assert.AreEqual("@im=ibus", env["XMODIFIERS"]);
             Assert.AreEqual("1", env["IBUS_ENABLE_SYNC_MODE"]);
@@ -38,7 +38,7 @@ namespace CefGlue.Tests.Platform
         {
             var env = new Dictionary<string, string> { ["XMODIFIERS"] = "@im=fcitx" };
 
-            Assert.IsInstanceOf<Fcitx5InputMethodProvider>(Configure(env));
+            Assert.AreEqual("fcitx", Configure(env));
             Assert.AreEqual("fcitx", env["GTK_IM_MODULE"]);
             Assert.IsFalse(env.ContainsKey("IBUS_ENABLE_SYNC_MODE"));
         }
@@ -48,7 +48,7 @@ namespace CefGlue.Tests.Platform
         {
             var env = new Dictionary<string, string> { ["QT_IM_MODULE"] = "fcitx5" };
 
-            Assert.IsInstanceOf<Fcitx5InputMethodProvider>(Configure(env));
+            Assert.AreEqual("fcitx", Configure(env));
             Assert.AreEqual("fcitx", env["GTK_IM_MODULE"]);
             Assert.AreEqual("@im=fcitx", env["XMODIFIERS"]);
             Assert.IsFalse(env.ContainsKey("IBUS_ENABLE_SYNC_MODE"));
@@ -63,7 +63,7 @@ namespace CefGlue.Tests.Platform
                 ["QT_IM_MODULE"] = "ibus"
             };
 
-            Assert.IsInstanceOf<Fcitx5InputMethodProvider>(Configure(env));
+            Assert.AreEqual("fcitx", Configure(env));
             Assert.AreEqual("fcitx", env["GTK_IM_MODULE"]);
         }
 
@@ -76,7 +76,7 @@ namespace CefGlue.Tests.Platform
                 ["XMODIFIERS"] = "@im=ibus"
             };
 
-            Assert.IsInstanceOf<Fcitx5InputMethodProvider>(Configure(env));
+            Assert.AreEqual("fcitx", Configure(env));
             Assert.AreEqual("fcitx", env["GTK_IM_MODULE"]);
             Assert.AreEqual("@im=ibus", env["XMODIFIERS"]);
             Assert.IsFalse(env.ContainsKey("IBUS_ENABLE_SYNC_MODE"));
@@ -101,7 +101,7 @@ namespace CefGlue.Tests.Platform
         {
             var env = new Dictionary<string, string> { ["GTK_IM_MODULE"] = "ibus" };
 
-            Assert.IsInstanceOf<IBusInputMethodProvider>(Configure(env));
+            Assert.AreEqual("ibus", Configure(env));
             Assert.AreEqual("1", env["IBUS_ENABLE_SYNC_MODE"]);
         }
 
@@ -114,7 +114,7 @@ namespace CefGlue.Tests.Platform
                 ["IBUS_ENABLE_SYNC_MODE"] = "0"
             };
 
-            Assert.IsInstanceOf<IBusInputMethodProvider>(Configure(env));
+            Assert.AreEqual("ibus", Configure(env));
             Assert.AreEqual("0", env["IBUS_ENABLE_SYNC_MODE"]);
         }
 
