@@ -40,6 +40,11 @@ CefGlue.Interop.Gen/Classes.Handlers.tmpl/
 CefGlue.Interop.Gen/Classes.Proxies.tmpl/
 **/.DS_Store
 *.nupkg
+# Fork packages (version 999.*) are committed; the folder is re-included too because
+# NuGet/output/ above also matches Nuget/output/ on case-insensitive file systems.
+!Nuget/output/
+!CefGlue.Common.999*
+!CefGlue.Avalonia.999*
 
 # CEF runtime caches
 GPUCache/
