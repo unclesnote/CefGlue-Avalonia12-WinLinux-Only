@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Builds the CefGlue.Common and CefGlue.Avalonia NuGet packages into Nuget/output.
-# The packages contain the Windows and Linux browser process only (see CefGlue.WinLinuxOnly.targets).
+# The packages contain the Windows and Linux x64 browser process only (see CefGlue.WinLinuxOnly.targets);
+# ARM64 is not supported by this fork.
 #
-#   ./publish.sh                      # Release, host architecture
+#   ./publish.sh                      # Release
 #   CONFIGURATION=Debug ./publish.sh
-#   PLATFORM=ARM64 ./publish.sh       # CefGlue.Common.ARM64 / CefGlue.Avalonia.ARM64
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -19,37 +19,14 @@ case "$UNAME_S" in
         ;;
 esac
 
-if [[ -z "${PLATFORM:-}" ]]; then
-    UNAME_M="$(uname -m)"
-    case "$UNAME_M" in
-        x86_64|amd64|AMD64)
-            PLATFORM="x64"
-            ;;
-        aarch64|arm64|ARM64)
-            PLATFORM="ARM64"
-            ;;
-        *)
-            echo "Unsupported architecture: $UNAME_M" >&2
-            exit 1
-            ;;
-    esac
-fi
-
-case "$PLATFORM" in
-    x64) PACKAGE_SUFFIX="" ;;
-    ARM64) PACKAGE_SUFFIX=".ARM64" ;;
-    *)
-        echo "Unsupported PLATFORM: $PLATFORM (expected x64 or ARM64)" >&2
-        exit 1
-        ;;
-esac
+PLATFORM="x64"
 
 CONFIGURATION="${CONFIGURATION:-Release}"
 VERSION="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' "$ROOT_DIR/Directory.Build.props" | head -n 1 | tr -d '\r[:space:]')"
 OUTPUT_DIR="$ROOT_DIR/Nuget/output"
 PACKAGES=(
-    "$OUTPUT_DIR/CefGlue.Common$PACKAGE_SUFFIX.$VERSION.nupkg"
-    "$OUTPUT_DIR/CefGlue.Avalonia$PACKAGE_SUFFIX.$VERSION.nupkg"
+    "$OUTPUT_DIR/CefGlue.Common.$VERSION.nupkg"
+    "$OUTPUT_DIR/CefGlue.Avalonia.$VERSION.nupkg"
 )
 
 echo "Packing: Platform=$PLATFORM, Configuration=$CONFIGURATION, Version=$VERSION"

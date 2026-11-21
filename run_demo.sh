@@ -25,12 +25,8 @@ case "$UNAME_M" in
         PLATFORM="x64"
         ARCH_RID="x64"
         ;;
-    aarch64|arm64|ARM64)
-        PLATFORM="ARM64"
-        ARCH_RID="arm64"
-        ;;
     *)
-        echo "Unsupported architecture: $UNAME_M" >&2
+        echo "Unsupported architecture: $UNAME_M (this fork supports x64 only)" >&2
         exit 1
         ;;
 esac

@@ -4,8 +4,8 @@ Rules and plan for anyone (human or AI agent) changing this repository.
 
 ## What this repository is
 
-A fork of CefGlue that targets **.NET 10 + Avalonia 12 on Windows and Linux only**
-(x64; ARM64 builds as `*.ARM64` packages). macOS and WPF are not targeted: their code is
+A fork of CefGlue that targets **.NET 10 + Avalonia 12 on Windows and Linux, x64 only**.
+ARM64, macOS and WPF are not supported: their code is
 still in the tree because it comes from upstream, but it is not built into the packages or
 maintained here.
 
@@ -57,7 +57,7 @@ Cherry-picks from upstream must stay easy to apply, so:
 
 ### 4. Verify before committing
 
-- Build and pack: `./publish.sh` (Release, host architecture). Both
+- Build and pack: `./publish.sh` (Release, x64). Both
   `CefGlue.Common.999.*.nupkg` and `CefGlue.Avalonia.999.*.nupkg` must be created, and the
   Common package must contain only `bin/linux-*` and `bin/win-*`.
 - Tests: `dotnet test CefGlue.Tests/CefGlue.Tests.csproj -p:Platform=x64`.
